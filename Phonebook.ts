@@ -49,3 +49,9 @@ class Phonebook implements IPhonebook {
     return this
   }
 }
+
+const createPhonebook = ():IPhonebook => {
+  return new Phonebook()
+}
+
+export default createPhonebook
