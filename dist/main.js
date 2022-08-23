@@ -17,3 +17,6 @@ const id8 = ahihudBook.add(new Contact_1.default('Beni', 'Karmiel', ['01-633258'
 const id9 = ahihudBook.add(new Contact_1.default('Sami', 'Tel-aviv', ['01-44477']));
 console.log(id1, id2, id3);
 console.log(ahihudBook.size);
+for (const contact of ahihudBook) {
+    console.log(contact);
+}
