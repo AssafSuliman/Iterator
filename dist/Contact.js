@@ -5,6 +5,7 @@ class Contact {
         this.name = name;
         this.address = address;
         this.phones = phones;
+        this.id = 0;
     }
 }
 exports.default = Contact;
