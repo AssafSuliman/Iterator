@@ -3,16 +3,16 @@ import Contact from "./Contact";
 
 class Phonebook implements IPhonebook {
   public contacts:Contact[]
+  public root:Contact | null
   public index:number
   public lastId:number
-  public currentContact:Contact | undefined
-  public tempArray:Contact[]
+  public tempSortedArray:Contact[]
   public lastIndex:number
   
   constructor(){
     this.contacts = []
-    this.tempArray = []
-    this.currentContact
+    this.root = null
+    this.tempSortedArray = []
     this.lastIndex = 0
     this.index = -1
     this.lastId = 0
@@ -24,13 +24,19 @@ class Phonebook implements IPhonebook {
     this.lastId++
     contact.id = this.lastId
     this.contacts.push(contact)
+    if(!this.root){
+      this.root = contact
+    }
+    else {
+      this.insertToBST(contact, this.root)
+    }
     return this.lastId
   }
   addPhone(id:number, phone:string):void{
     this.contacts.find(contact => contact.id === id)?.phones.push(phone)
   }
   
-  get(idOrName: any): any {
+  get(idOrName: number | string): any {
     if(typeof idOrName != 'string'){
       return this.contacts.find(contact => contact.id === idOrName)
     }
@@ -56,29 +62,49 @@ class Phonebook implements IPhonebook {
     }
     return contact
   }
+
+  insertToBST (contact:Contact, root:Contact):void  {
+    if(contact.name >= root.name){
+        if(root.rightNode != undefined){
+            this.insertToBST(contact, root.rightNode)
+        }
+        else{
+            root.rightNode = contact
+        }
+    }
+    else if(contact.name < root.name){
+        if(root.leftNode != undefined){
+            this.insertToBST(contact, root.leftNode)
+        }
+        else{
+            root.leftNode = contact
+        }
+    }
+  }
+
+  pushToArray (node:Contact|null, tempArray:Contact[]):void  {
+    if(node === null){
+        return
+    }
+    this.pushToArray(node.leftNode, tempArray)
+    tempArray.push(node)
+    this.pushToArray(node.rightNode, tempArray)
+}
+
   next():{done:boolean, value:Contact} {
     if(this.index === -1){
-      this.tempArray = [...this.contacts]
+      this.pushToArray(this.root, this.tempSortedArray)
     }
     
     this.index++
     if(this.index === this.contacts.length){
+      this.tempSortedArray = []
       return {done:true, value:this.contacts[this.index]}
     }
-
-    this.currentContact = this.tempArray[0]
     
-    for(let i = 1; i < this.tempArray.length; i++){
-      if(this.currentContact.name > this.tempArray[i].name){
-        this.currentContact = this.tempArray[i]
-        this.lastIndex = i
-      }
-    }
-    this.tempArray.splice(this.lastIndex, 1)
-    this.lastIndex = 0 
     return {
       done:false,
-      value:this.currentContact
+      value:this.tempSortedArray[this.index]
     }
   } 
 
@@ -118,3 +144,25 @@ for(let contact of this.contacts){
   }
 }
 this.currentContact = this.tempContact */
+
+
+
+
+/* this.currentContact = this.tempArray[0]
+    
+    for(let i = 1; i < this.tempArray.length; i++){
+      if(this.currentContact.name > this.tempArray[i].name){
+        this.currentContact = this.tempArray[i]
+        this.lastIndex = i
+      }
+    }
+    this.tempArray.splice(this.lastIndex, 1)
+    this.lastIndex = 0  */
+
+
+   /*  this.tempArray = [...this.contacts]
+      this.tempArray.sort((a, b):number => {
+        if(a.name > b.name) return 1
+        else if(a.name < b.name) return -1
+        return 0
+      }) */

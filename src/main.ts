@@ -17,8 +17,7 @@ console.log(id1,id2,id3);
 console.log(ahihudBook.size);
 
 for(const contact of ahihudBook){
-  console.log(contact);
-  
+  console.log(contact.name);
 }
 
 
